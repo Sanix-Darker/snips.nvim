@@ -85,5 +85,10 @@ function M.execute_snips_command()
     os.remove(temp_file)
 end
 
+-- Setup user settings.
+function M.setup(opts)
+    -- nothing defined yet
+end
+
 -- yup, we return the module at the end
 return M
