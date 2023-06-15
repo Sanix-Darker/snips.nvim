@@ -1,11 +1,7 @@
 *snips.txt*
-*nvimsnips.txt*
-*nvim-snips.txt*
 
 `URL`: https://github.com/Sanix-Darker/nvim-snips.nvim
 
 `PATH`: ../README.md
-
-press `sn` under the PATH value :)
 
 vim:ft=help

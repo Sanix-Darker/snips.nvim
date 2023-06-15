@@ -37,3 +37,11 @@ require('snips.nvim').setup()
 
 - Select a bunch of lines from your current buffer.
 - Hit `SnipCreate` and you have generated/saved a snippet of your code, you're left with the link to share.
+
+## NOTE
+
+If you have some ideas on how to upgrade this plugin am would be happy to read your issues, suggestions, Pull Requests. But for now i will keep it like this since it does what i wanted it to do from the begining.
+
+## AUTHOR
+
+[sanix-darker](https://github.com/sanix-darker)
