@@ -1,5 +1,7 @@
 # snips.nvim
 
+https://github.com/Sanix-Darker/snips.nvim/assets/22576758/673501a4-6a7d-4f9a-bdbb-eb2c78ed3455
+
 As a fan of sharing snippet blocks of code, I came across an interesting project [snips](https://snips.sh) from [robherley](https://github.com/robherley), none authentication is required to generate a small snippet of code, whenever you want and without limit.
 
 So I thought... why not make a small/dumb plugin for that on my neovim !
