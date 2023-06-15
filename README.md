@@ -1,15 +1,14 @@
 # snips.nvim
 
-As a fan of sharing block of code snippets, i came accross an interesting project [snips](https://snips.sh), no authentification needed at all, it allow you to save some code online and share it whenever you want and with no limit.
+As a fan of sharing snippet blocks of code, I came across an interesting project [snips](https://snips.sh) from [robherley](https://github.com/robherley), none authentication is required to generate a small snippet of code, whenever you want and without limit.
 
-So i was like... why not making a small plugin for it !
-In the past i was using Gist.vim but the fact that it need authentification and i needed to generate a token save on my computer... i was not really happy about that...
+So I thought... why not make a small/dumb plugin for that on my neovim !
+In the past I used [Gist.vim](https://github.com/mattn/vim-gist) but the fact that it required authentication and I had to generate a token that was going to be saved on "clear" on my computer... I didn't really like that.
 
-The simple idea behind this plugin is to :
-- get selected lines from the current buffer
+The simple idea behind this plugin is to:
+- get selected rows from current buffer
 - save it in a temporary file
-- execute this command `cat /tmp.file | ssh snips.sh` and return the output in the command prompt
-
+- run this command `cat /tmp.file | ssh snips.sh` and return output to command prompt.
 
 ## HOW TO INSTALL
 
@@ -18,17 +17,21 @@ Using Packer :
 use 'Sanix-Darker/snips.nvim'
 ```
 
-or Vim-plug
+Using  Vim-plug :
 
 ```
-Plub 'Sanix-Darker/snips.nvim'
+Plug 'Sanix-Darker/snips.nvim'
 ```
 
-Then in your `init.lua` file :
+Then in your `init.lua` file you can just run :
 
 ```lua
 require('snips.nvim').setup()
+-- this will just make sure the plugin is available
+-- maybe planing on adding more customisations ? idk...
 ```
 
 ## HOW TO USE
 
+- Select a bunch of lines from your current buffer.
+- Hit `SnipCreate` and you have generated/saved a snippet of your code, you're left with the link to share.
