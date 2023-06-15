@@ -5,5 +5,5 @@ if !has('nvim-0.5.0')
   finish
 endif
 
-" The Create a Snip
-command! SnipsCreate              lua require'snips'.execute_snips_command()
+" The Create a Snips
+command! -range SnipsCreate <line1>,<line2>lua require'snips'.execute_snips_command()
