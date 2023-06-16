@@ -10,7 +10,7 @@ In the past I used [Gist.vim](https://github.com/mattn/vim-gist) but the fact th
 The simple idea behind this plugin is to:
 - get selected rows from current buffer
 - save it in a temporary file
-- run this command `cat /tmp.file | ssh snips.sh` and return output to command prompt.
+- run this command `cat /your-generated-tmp.file | ssh snips.sh` and return output in a new splitted buffer.
 
 ## HOW TO INSTALL
 
