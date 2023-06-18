@@ -55,7 +55,16 @@ The simple idea behind this plugin is to:
     by running this example command on the terminal : `echo "Hello world" | ssh snips.sh`
     Then you can open your nvim.
 - Select a bunch of lines from your current buffer.
-- Hit `SnipCreate` and you have generated/saved a snippet of your code, you're left with the link to share.
+- Hit `SnipsCreate` and you have generated/saved a snippet of your code, you're left with the link to share.
+
+## DEFAULT OPTIONS
+
+```lua
+local opts = {
+  post_behavior = "echo",  -- or "yank"
+}
+require("snips.nvim").setup(opts)
+```
 
 ## NOTE
 
