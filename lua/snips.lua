@@ -49,11 +49,10 @@ end
 
 ---Extract the url from snips.sh output
 function M.yank_shared_url(cleaned_output)
-  -- Extract the URL from the output (kind of salty... idc as soon as it works)
-  -- commenting this because at the end, am not quite sure we need to extract
-  -- the url, the user would also want to see the whole command output, idk?
-  local url = cleaned_output:match("URL 🔗%s+(%S+)")
-  if url then
+  local id = cleaned_output:match("id:%s*(%w+)")
+  if id then
+    local url = string.format("https://snips.sh/f/%s", id)
+    vim.fn.setreg("+", url)
     print("SNIPS URL: " .. url)
   else
     print(cleaned_output)
