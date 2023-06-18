@@ -47,6 +47,20 @@ function M.split_and_insert(content)
 end
 
 
+---Extract the url from snips.sh output
+function M.yank_shared_url(cleaned_output)
+  -- Extract the URL from the output (kind of salty... idc as soon as it works)
+  -- commenting this because at the end, am not quite sure we need to extract
+  -- the url, the user would also want to see the whole command output, idk?
+  local url = cleaned_output:match("URL 🔗%s+(%S+)")
+  if url then
+    print("SNIPS URL: " .. url)
+  else
+    print(cleaned_output)
+  end
+end
+
+
 ---Execute the ssh command line to send the file on snips
 function M.execute_snips_command()
     local selected_lines = {}
@@ -81,24 +95,15 @@ function M.execute_snips_command()
     -- yes... you should have at leas "cat " on your system... easy
     local ssh_command = string.format("cat %s | ssh snips.sh", temp_file)
     local output = io.popen(ssh_command):read("*a")
-    print("SNIPS::Executing : " .. ssh_command)
     -- to remove fancy colorisations
     local cleaned_output = output:gsub("\27%[[%d;]+m", "")
 
-    -- Extract the URL from the output (kind of salty... idc as soon as it works)
-    -- commenting this because at the end, am not quite sure we need to extract
-    -- the url, the user would also want to see the whole command output, idk?
-    -- local url = cleaned_output:match("URL 🔗%s+(%S+)")
-    -- if url then
-    --     print("SNIPS URL: " .. url)
-    --     -- we delete the temp file if everything was fine
-    --     os.remove(temp_file)
-    -- else
-    --     print("ERROR: URL not found in the output, (available here :"..temp_file.." ).")
-    -- end
-
-    -- Create a new empty buffer and paste the output of the code there
-    M.split_and_insert(cleaned_output)
+    if M.opts.post_behavior == "echo" then
+      -- Create a new empty buffer and paste the output of the code there
+      M.split_and_insert(cleaned_output)
+    else
+      M.yank_shared_url(cleaned_output)
+    end
 
     -- we erase the tmp file
     os.remove(temp_file)
@@ -107,6 +112,11 @@ end
 -- Setup user settings.
 function M.setup(opts)
     -- nothing defined yet
+    local default_opts = {
+      post_behavior = "echo",  -- or "yank"
+    }
+    vim.tbl_extend("force", default_opts, opts)
+    M.opts = opts
 end
 
 -- yup, we return the module at the end
