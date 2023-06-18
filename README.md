@@ -59,7 +59,8 @@ The simple idea behind this plugin is to:
 
 ## NOTE
 
-If you have some ideas on how to upgrade this plugin am would be happy to read your issues, suggestions, Pull Requests. But for now i will keep it like this since it does what i wanted it to do from the begining.
+If you have some ideas on how to upgrade this plugin i would be happy to read your issues, suggestions, Pull Requests.
+But for now i will keep it simple since it does what i want it to do for now.
 
 ## AUTHOR
 
