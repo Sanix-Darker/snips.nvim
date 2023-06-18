@@ -14,24 +14,40 @@ The simple idea behind this plugin is to:
 
 ## HOW TO INSTALL
 
-Using Packer :
-```lua
-use 'Sanix-Darker/snips.nvim'
-```
+- Using Packer :
+    ```lua
+    use 'Sanix-Darker/snips.nvim'
+    ```
 
-Using  Vim-plug :
+- Using Vim-plug :
+    ```
+    Plug 'Sanix-Darker/snips.nvim'
+    ```
 
-```
-Plug 'Sanix-Darker/snips.nvim'
-```
+    Then in your `init.lua` file you can just run :
 
-Then in your `init.lua` file you can just run :
+    ```lua
+    require('snips.nvim').setup()
+    -- this will just make sure the plugin is available
+    -- maybe planing on adding more customisations ? idk...
+    ```
 
-```lua
-require('snips.nvim').setup()
--- this will just make sure the plugin is available
--- maybe planing on adding more customisations ? idk...
-```
+- Using Lazy.nvim :
+
+    ```lua
+    require('snips').setup()
+    ```
+    or
+
+    ```lua
+    return {
+      {
+        "Sanix-Darker/snips.nvim",
+        config = true,
+        cmd = { "SnipsCreate" },  -- optional, make the plugin loads at cmd executed
+      },
+    }
+    ```
 
 ## HOW TO USE
 
