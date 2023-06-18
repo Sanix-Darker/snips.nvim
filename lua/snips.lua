@@ -49,7 +49,7 @@ end
 
 ---Extract the url from snips.sh output
 function M.yank_shared_url(cleaned_output)
-  local id = cleaned_output:match("id:%s*(%w+)")
+  local id = cleaned_output:match("id:%s*(%S+)")
   if id then
     local url = string.format("https://snips.sh/f/%s", id)
     vim.fn.setreg("+", url)
