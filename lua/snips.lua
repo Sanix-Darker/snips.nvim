@@ -61,9 +61,9 @@ end
 
 
 ---Execute the ssh command line to send the file on snips
-function M.execute_snips_command()
+function M:execute_snips_command()
     local selected_lines = {}
-    for _, line in ipairs(M.get_selected_lines()) do
+    for _, line in ipairs(self.get_selected_lines()) do
       table.insert(selected_lines, line)
     end
 
@@ -74,7 +74,7 @@ function M.execute_snips_command()
 
     local content = table.concat(selected_lines, "\n")
 
-    local temp_file = os.tmpname() .. "." .. M.get_file_extension()
+    local temp_file = os.tmpname() .. "." .. self.get_file_extension()
     local file = io.open(temp_file, "w")
 
     -- because i miss the simplicity of golang
@@ -97,25 +97,44 @@ function M.execute_snips_command()
     -- to remove fancy colorisations
     local cleaned_output = output:gsub("\27%[[%d;]+m", "")
 
-    if M.opts.post_behavior == "echo" then
+    if self.opts.post_behavior == "echo" then
       -- Create a new empty buffer and paste the output of the code there
-      M.split_and_insert(cleaned_output)
+      self.split_and_insert(cleaned_output)
     else
-      M.yank_shared_url(cleaned_output)
+      self.yank_shared_url(cleaned_output)
     end
 
     -- we erase the tmp file
     os.remove(temp_file)
 end
 
+
+function M:command_factory(file_path)
+  local concat_cmd = function (cmd_path, cmd_args)
+    local cmd = cmd_path
+    if cmd_args ~= nil then
+      cmd = cmd .. table.concat(cmd_args, " ")
+    end
+    return cmd
+  end
+
+  local cat_command = concat_cmd(self.opts.cat_path, self.opts.cat_args)
+  local ssh_command = concat_cmd(self.opts.ssh_path, self.opts.ssh_args)
+  return string.format("%s %s | %s snips.sh", cat_command, file_path, ssh_command)
+end
+
+
 -- Setup user settings.
 function M.setup(opts)
     -- nothing defined yet
     local default_opts = {
       post_behavior = "echo",  -- or "yank"
+      cat_path = "cat",
+      cat_args = nil,
+      ssh_path = "ssh",
+      ssh_args = nil,
     }
-    vim.tbl_extend("force", default_opts, opts)
-    M.opts = opts
+    M.opts = vim.tbl_extend("keep", opts, default_opts)
 end
 
 -- yup, we return the module at the end
