@@ -61,9 +61,9 @@ end
 
 
 ---Execute the ssh command line to send the file on snips
-function M:execute_snips_command()
+function M.execute_snips_command()
     local selected_lines = {}
-    for _, line in ipairs(self.get_selected_lines()) do
+    for _, line in ipairs(M.get_selected_lines()) do
       table.insert(selected_lines, line)
     end
 
@@ -74,7 +74,7 @@ function M:execute_snips_command()
 
     local content = table.concat(selected_lines, "\n")
 
-    local temp_file = os.tmpname() .. "." .. self.get_file_extension()
+    local temp_file = os.tmpname() .. "." .. M.get_file_extension()
     local file = io.open(temp_file, "w")
 
     -- because i miss the simplicity of golang
@@ -97,11 +97,11 @@ function M:execute_snips_command()
     -- to remove fancy colorisations
     local cleaned_output = output:gsub("\27%[[%d;]+m", "")
 
-    if self.opts.post_behavior == "echo" then
+    if M.opts.post_behavior == "echo" then
       -- Create a new empty buffer and paste the output of the code there
-      self.split_and_insert(cleaned_output)
+      M.split_and_insert(cleaned_output)
     else
-      self.yank_shared_url(cleaned_output)
+      M.yank_shared_url(cleaned_output)
     end
 
     -- we erase the tmp file
