@@ -70,7 +70,7 @@ function M.execute_snips_command()
     end
 
     if selected_lines == nil or #selected_lines == 0 then
-        print("SNIPS::ERROR:: No lines selected.")
+        vim.print("SNIPS::ERROR:: No lines selected.")
         return
     end
 
@@ -81,7 +81,7 @@ function M.execute_snips_command()
 
     -- because i miss the simplicity of golang
     if file == nil then
-        print("SNIPS::ERROR:: Failed to create temporary file.")
+        vim.print("SNIPS::ERROR:: Failed to create temporary file.")
         return
     end
     local success, error_message = pcall(function()
@@ -89,7 +89,7 @@ function M.execute_snips_command()
         file:close()
     end)
     if not success then
-        print("SNIPS::ERROR:: While writing to or closing the temporary file:", error_message)
+        vim.print("SNIPS::ERROR:: While writing to or closing the temporary file:", error_message)
         return
     end
 

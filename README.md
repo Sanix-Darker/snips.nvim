@@ -56,13 +56,14 @@ The simple idea behind this plugin is to:
     Then you can open your nvim.
 - Select a bunch of lines from your current buffer.
 - Hit `SnipsCreate` and you have generated/saved a snippet of your code, you're left with the link to share.
+- Hit `SnipsList` To open the list of all uploaded/saved snips you have created so far.
 
 ## DEFAULT OPTIONS
 
 ```lua
 local opts = {
   post_behavior = "echo",  -- or "yank"
-  cat_cmd = "cat", -- can be bat or less
+  cat_cmd = "cat", -- can be `bat` or `less`
   ssh_cmd = "ssh", -- choose your custom ssh client
 }
 require("snips.nvim").setup(opts)
@@ -76,3 +77,7 @@ But for now i will keep it simple since it does what i want it to do for now.
 ## AUTHOR
 
 [sanix-darker](https://github.com/sanix-darker)
+
+## CONTRIBUTORS
+
+- [Pagliacii](https://github.com/Pagliacii)
