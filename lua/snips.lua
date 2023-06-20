@@ -53,9 +53,9 @@ function M.yank_shared_url(cleaned_output)
   if id then
     local url = string.format("https://snips.sh/f/%s", id)
     vim.fn.setreg("+", url)
-    print("SNIPS URL: " .. url)
+    vim.print("SNIPS URL: " .. url)
   else
-    print(cleaned_output)
+    vim.print(cleaned_output)
   end
 end
 
@@ -93,7 +93,6 @@ function M.execute_snips_command()
 
     -- yes... you should have at leas "cat " on your system... easy
     local command = M:command_factory(temp_file)
-    print("SNIPS sharing...")
     local output = io.popen(command):read("*a")
     -- to remove fancy colorisations
     local cleaned_output = output:gsub("\27%[[%d;]+m", "")
