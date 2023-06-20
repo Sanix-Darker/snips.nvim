@@ -92,8 +92,8 @@ function M.execute_snips_command()
     end
 
     -- yes... you should have at leas "cat " on your system... easy
-    local ssh_command = string.format("cat %s | ssh snips.sh", temp_file)
-    local output = io.popen(ssh_command):read("*a")
+    local command = M:command_factory(temp_file)
+    local output = io.popen(command):read("*a")
     -- to remove fancy colorisations
     local cleaned_output = output:gsub("\27%[[%d;]+m", "")
 
@@ -110,17 +110,7 @@ end
 
 
 function M:command_factory(file_path)
-  local concat_cmd = function (cmd_path, cmd_args)
-    local cmd = cmd_path
-    if cmd_args ~= nil then
-      cmd = cmd .. table.concat(cmd_args, " ")
-    end
-    return cmd
-  end
-
-  local cat_command = concat_cmd(self.opts.cat_path, self.opts.cat_args)
-  local ssh_command = concat_cmd(self.opts.ssh_path, self.opts.ssh_args)
-  return string.format("%s %s | %s snips.sh", cat_command, file_path, ssh_command)
+  return string.format("%s %s | %s snips.sh", self.opts.cat_cmd, file_path, self.opts.ssh_cmd)
 end
 
 
@@ -129,10 +119,8 @@ function M.setup(opts)
     -- nothing defined yet
     local default_opts = {
       post_behavior = "echo",  -- or "yank"
-      cat_path = "cat",
-      cat_args = nil,
-      ssh_path = "ssh",
-      ssh_args = nil,
+      cat_cmd = "cat",
+      ssh_cmd = "ssh",
     }
     M.opts = vim.tbl_extend("keep", opts, default_opts)
 end
