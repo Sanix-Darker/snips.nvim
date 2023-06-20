@@ -62,6 +62,8 @@ The simple idea behind this plugin is to:
 ```lua
 local opts = {
   post_behavior = "echo",  -- or "yank"
+  cat_cmd = "cat", -- can be bat or less
+  ssh_cmd = "ssh", -- choose your custom ssh client
 }
 require("snips.nvim").setup(opts)
 ```

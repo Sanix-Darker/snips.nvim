@@ -55,9 +55,9 @@ function M.yank_shared_url(cleaned_output)
   if id then
     local url = string.format("https://snips.sh/f/%s", id)
     vim.fn.setreg("+", url)
-    print("SNIPS URL: " .. url)
+    vim.print("SNIPS URL: " .. url)
   else
-    print(cleaned_output)
+    vim.print(cleaned_output)
   end
 end
 
@@ -94,8 +94,8 @@ function M.execute_snips_command()
     end
 
     -- yes... you should have at leas "cat " on your system... easy
-    local ssh_command = string.format("cat %s | ssh snips.sh", temp_file)
-    local output = io.popen(ssh_command):read("*a")
+    local command = M:command_factory(temp_file)
+    local output = io.popen(command):read("*a")
     -- to remove fancy colorisations
     local cleaned_output = output:gsub("\27%[[%d;]+m", "")
 
@@ -109,6 +109,7 @@ function M.execute_snips_command()
     -- we erase the tmp file
     os.remove(temp_file)
 end
+
 
 ---To capture ESC on snips UI, we need those three methods
 local t = function(str)
@@ -175,14 +176,21 @@ function M.list_snips(ssh_command)
     M.escape_esc()
 end
 
+
+function M:command_factory(file_path)
+  return string.format("%s %s | %s snips.sh", self.opts.cat_cmd, file_path, self.opts.ssh_cmd)
+end
+
+
 -- Setup user settings.
 function M.setup(opts)
     -- nothing defined yet
     local default_opts = {
       post_behavior = "echo",  -- or "yank"
+      cat_cmd = "cat",
+      ssh_cmd = "ssh",
     }
-    vim.tbl_extend("force", default_opts, opts)
-    M.opts = opts
+    M.opts = vim.tbl_extend("keep", opts, default_opts)
 end
 
 -- yup, we return the module at the end
