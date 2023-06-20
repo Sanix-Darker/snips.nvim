@@ -1,5 +1,7 @@
 ---@class Snips
 local M = {}
+-- to escape ESC, this will contains key and the process name(the ssh client)
+_G.term_esc = {}
 
 ---Return a list of lines selected in the current buffer(visual mode)
 ---@return {}
@@ -108,6 +110,54 @@ function M.execute_snips_command()
     os.remove(temp_file)
 end
 
+---To capture ESC on snips UI, we need those three methods
+local t = function(str)
+    return vim.api.nvim_replace_termcodes(str, true, true, true)
+end
+
+_G.term_esc.smart_esc = function(term_pid)
+    local function find_process(pid)
+        local p = vim.api.nvim_get_proc(pid)
+        if _G.term_esc.except[p.name] then
+            return true
+        end
+        for _,v in ipairs(vim.api.nvim_get_proc_children(pid)) do
+            if find_process(v) then
+                return true
+            end
+        end
+        return false
+    end
+
+    if find_process(term_pid) then
+        return t(_G.term_esc.key)
+    else
+        return t'<C-\\><C-n>'
+    end
+end
+
+local set = function(table)
+    local ret = {}
+    for _, v in ipairs(table) do
+        ret[v] = true
+    end
+    return ret
+end
+
+---to call the terminal escape on Esc
+function M.escape_esc()
+    _G.term_esc.key = '<Esc>'
+    _G.term_esc.except = set({'ssh'})
+
+    vim.api.nvim_set_keymap(
+        't',
+        _G.term_esc.key,
+        'v:lua.term_esc.smart_esc(b:terminal_job_pid)',
+        {noremap = true, expr = true}
+    )
+end
+
+---To open the snips terminal UI for all availabe snips
 function M.list_snips(ssh_command)
     ssh_command = ssh_command or "ssh"
 
@@ -120,6 +170,9 @@ function M.list_snips(ssh_command)
     vim.fn.termopen(command)
 
     vim.cmd('startinsert')
+
+    -- escape ESC
+    M.escape_esc()
 end
 
 -- Setup user settings.
