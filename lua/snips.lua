@@ -108,6 +108,20 @@ function M.execute_snips_command()
     os.remove(temp_file)
 end
 
+function M.list_snips(ssh_command)
+    ssh_command = ssh_command or "ssh"
+
+    vim.cmd('split')
+    vim.cmd('wincmd j')
+
+    vim.api.nvim_command('enew')
+
+    local command = string.format("%s snips.sh", ssh_command)
+    vim.fn.termopen(command)
+
+    vim.cmd('startinsert')
+end
+
 -- Setup user settings.
 function M.setup(opts)
     -- nothing defined yet

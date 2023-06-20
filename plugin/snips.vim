@@ -5,5 +5,8 @@ if !has('nvim-0.5.0')
   finish
 endif
 
-" The Create a Snips
+" The Create a new Snips
 command! -range SnipsCreate <line1>,<line2>lua require'snips'.execute_snips_command()
+
+" To open the snips UI to list for available saved/uploaded snips
+command! SnipsList lua require'snips'.list_snips()
