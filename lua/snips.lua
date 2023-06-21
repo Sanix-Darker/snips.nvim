@@ -34,18 +34,26 @@ function M.split_and_insert(content)
 
     -- Create a new empty buffer and set the content
     vim.api.nvim_command("enew")
+    -- Make the new buffer as a temp buffer
+    local bufnr = vim.api.nvim_get_current_buf()
+    vim.api.nvim_buf_set_option(bufnr, "buftype", "nofile")
+    vim.api.nvim_buf_set_option(bufnr, "bufhidden", "delete")
+    vim.api.nvim_buf_set_option(bufnr, "swapfile", false)
+    vim.api.nvim_buf_set_option(bufnr, "buflisted", false)
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "q", "<C-w>q", { noremap = true, silent = true })
     -- Split the content into lines
     local lines = vim.split(content, "\n")
-    vim.api.nvim_buf_set_lines(0, 0, -1, true, lines)
+    vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, lines)
+    vim.api.nvim_buf_set_option(bufnr, "modifiable", false)
     vim.cmd("resize -10")
 end
 
 ---Extract the url from snips.sh output
-function M.yank_shared_url(cleaned_output)
+function M:yank_shared_url(cleaned_output)
     local id = cleaned_output:match("id:%s*(%S+)")
     if id then
         local url = string.format("https://snips.sh/f/%s", id)
-        vim.fn.setreg("+", url)
+        vim.fn.setreg(self.opts.yank_register, url)
         vim.print("SNIPS URL: " .. url)
     else
         vim.print(cleaned_output)
@@ -100,7 +108,7 @@ function M.execute_snips_command()
         -- Create a new empty buffer and paste the output of the code there
         M.split_and_insert(cleaned_output)
     else
-        M.yank_shared_url(cleaned_output)
+        M:yank_shared_url(cleaned_output)
     end
 
     -- we erase the tmp file
@@ -188,6 +196,7 @@ function M.setup(opts)
     -- nothing defined yet
     local default_opts = {
         post_behavior = "echo", -- or "yank"
+        yank_register = "+",
         cat_cmd = "cat",
         ssh_cmd = "ssh"
     }
