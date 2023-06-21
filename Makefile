@@ -4,6 +4,13 @@ DEPS ?= build
 LUA_LS ?= $(DEPS)/lua-language-server
 LINT_LEVEL ?= Information
 
+install:
+	sudo apt-get install luarocks -y
+	sudo luarocks install busted
+
+test:
+	busted ./tests/snips_test.lua
+
 all:
 
 lint:
@@ -15,4 +22,4 @@ lint:
 clean:
 	rm -rf $(DEPS)
 
-.PHONY: all deps clean lint
+.PHONY: all deps clean lint install test

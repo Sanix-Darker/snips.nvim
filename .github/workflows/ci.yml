@@ -1,0 +1,22 @@
+name: Test CI
+
+on: ["push"]
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Lua and Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install lua5.3 liblua5.3-dev luarocks
+          sudo luarocks install busted
+
+      - name: Run Tests
+        run: busted ./tests/snips_test.lua
+
