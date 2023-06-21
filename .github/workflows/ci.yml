@@ -11,13 +11,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Install Lua
+      - name: Install Lua and Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install lua5.3 luarocks
-
-      - name: Install Dependencies
-        run: sudo luarocks install busted
+          sudo apt-get install lua5.3 liblua5.3-dev luarocks
+          sudo luarocks install busted
 
       - name: Run Tests
         run: busted ./tests/snips_test.lua
