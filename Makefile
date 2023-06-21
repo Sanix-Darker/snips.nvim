@@ -22,4 +22,4 @@ lint:
 clean:
 	rm -rf $(DEPS)
 
-.PHONY: all deps clean lint install
+.PHONY: all deps clean lint install test
