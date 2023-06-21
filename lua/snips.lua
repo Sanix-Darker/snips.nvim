@@ -23,10 +23,6 @@ end
 ---Return the file extension of the current buffer
 ---@return string
 function M.get_file_extension()
-    -- because we need/want hightlighting
-    -- unfortunatelly, snips.sh infer the type itself on their server...
-    -- so even if you specify the type extension here... it will guess
-    -- something else... however... am keeping this function
     local current_buffer = vim.api.nvim_get_current_buf()
     local file_name = vim.api.nvim_buf_get_name(current_buffer)
     local file_extension = file_name:match("%.([^%.]+)$")
@@ -76,7 +72,12 @@ function M.execute_snips_command()
 
     local content = table.concat(selected_lines, "\n")
 
-    local temp_file = os.tmpname() .. "." .. M.get_file_extension()
+    local ext = M.get_file_extension()
+    local temp_file = os.tmpname()
+    if ext ~= nil then
+        temp_file = temp_file .. "." .. ext
+    end
+
     local file = io.open(temp_file, "w")
 
     -- because i miss the simplicity of golang
@@ -93,10 +94,9 @@ function M.execute_snips_command()
         return
     end
 
-    -- yes... you should have at leas "cat " on your system... easy
-    local command = M:command_factory(temp_file)
+    local command = M:command_factory(temp_file, ext)
     local output = io.popen(command):read("*a")
-    -- to remove fancy colorisations
+    -- To remove terminal colors
     local cleaned_output = output:gsub("\27%[[%d;]+m", "")
 
     if M.opts.post_behavior == "echo" then
@@ -177,8 +177,21 @@ function M.list_snips(ssh_command)
 end
 
 
-function M:command_factory(file_path)
-  return string.format("%s %s | %s snips.sh", self.opts.cat_cmd, file_path, self.opts.ssh_cmd)
+function M:command_factory(file_path, extension)
+    local extension_args = ""
+
+    -- We force an extension if we detect that there is one
+    if extension ~= nil then
+        extension_args = "-- --ext " .. extension
+    end
+
+    return string.format(
+        "%s %s | %s snips.sh %s",
+        self.opts. cat_cmd,
+        file_path,
+        self.opts. ssh_cmd,
+        extension_args
+    )
 end
 
 
