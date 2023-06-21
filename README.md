@@ -7,6 +7,18 @@ As a fan of sharing snippet blocks of code, I came across an interesting project
 So I thought... why not make a small/dumb plugin for that on my neovim !
 In the past I used [Gist.vim](https://github.com/mattn/vim-gist) but the fact that it required authentication and I had to generate a token that was going to be saved on "clear" on my computer... I didn't really like that.
 
+## REQUIREMENTS
+
+- VIM (>=8 recommended)
+- NVIM (>=0.5 recommended)
+
+## FEATURES
+
+- Save/upload code snipets from your code editor.
+- List/Edit your saved blocks of code.
+
+## HOW DOES IT WORK
+
 The simple idea behind this plugin is to:
 - get selected rows from current buffer
 - save it in a temporary file
