@@ -62,7 +62,8 @@ The simple idea behind this plugin is to:
 
 ```lua
 local opts = {
-  post_behavior = "echo",  -- or "yank"
+  post_behavior = "echo",  -- enum: ["echo", "yank", "echo_and_yank"]
+  yank_register = "+",
   cat_cmd = "cat", -- can be `bat` or `less`
   ssh_cmd = "ssh", -- choose your custom ssh client
 }

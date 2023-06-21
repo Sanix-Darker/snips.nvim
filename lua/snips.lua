@@ -42,20 +42,22 @@ function M.split_and_insert(content)
     vim.api.nvim_buf_set_option(bufnr, "buflisted", false)
     vim.api.nvim_buf_set_keymap(bufnr, "n", "q", "<C-w>q", { noremap = true, silent = true })
     -- Split the content into lines
-    local lines = vim.split(content, "\n")
+    local lines = vim.split(vim.trim(content), "\n")
     vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, lines)
     vim.api.nvim_buf_set_option(bufnr, "modifiable", false)
     vim.cmd("resize -10")
 end
 
 ---Extract the url from snips.sh output
-function M:yank_shared_url(cleaned_output)
+function M:yank_shared_url(cleaned_output, silent)
     local id = cleaned_output:match("id:%s*(%S+)")
     if id then
         local url = string.format("https://snips.sh/f/%s", id)
         vim.fn.setreg(self.opts.yank_register, url)
-        vim.print("SNIPS URL: " .. url)
-    else
+        if not silent then
+          vim.print("SNIPS URL: " .. url)
+        end
+    elseif not silent then
         vim.print(cleaned_output)
     end
 end
@@ -104,11 +106,14 @@ function M.execute_snips_command()
     -- To remove terminal colors
     local cleaned_output = output:gsub("\27%[[%d;]+m", "")
 
-    if M.opts.post_behavior == "echo" then
-        -- Create a new empty buffer and paste the output of the code there
+    if M.opts.post_behavior == "yank" then
+        M:yank_shared_url(cleaned_output)
+    elseif M.opts.post_behavior == "echo_and_yank" then
+        M:yank_shared_url(cleaned_output, true)
         M.split_and_insert(cleaned_output)
     else
-        M:yank_shared_url(cleaned_output)
+        -- Create a new empty buffer and paste the output of the code there
+        M.split_and_insert(cleaned_output)
     end
 
     -- we erase the tmp file
