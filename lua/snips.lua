@@ -193,13 +193,21 @@ function M:command_factory(file_path, extension)
         extension_args = "-- --ext " .. extension
     end
 
-    return string.format("%s %s | %s snips.sh %s", self.opts.cat_cmd, file_path, self.opts.ssh_cmd, extension_args)
+    return string.format(
+        "%s %s | %s %s %s",
+        self.opts.cat_cmd,
+        file_path,
+        self.opts.ssh_cmd,
+        self.opts.snips_host,
+        extension_args
+    )
 end
 
 -- Setup user settings.
 function M.setup(opts)
     -- nothing defined yet
     local default_opts = {
+        snips_host = "snips.sh",
         post_behavior = "echo", -- or "yank"
         yank_register = "+",
         cat_cmd = "cat",
