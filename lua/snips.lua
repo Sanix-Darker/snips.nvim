@@ -55,7 +55,7 @@ function M:yank_shared_url(cleaned_output, silent)
         local url = string.format("https://snips.sh/f/%s", id)
         vim.fn.setreg(self.opts.yank_register, url)
         if not silent then
-          vim.print("SNIPS URL: " .. url)
+          vim.print("SNIPS URL: " .. url .. " (Copied to your clipboard.)")
         end
     elseif not silent then
         vim.print(cleaned_output)
@@ -160,10 +160,10 @@ function M.escape_esc()
     _G.term_esc.except = set({"ssh"})
 
     vim.api.nvim_set_keymap(
-    "t",
-    _G.term_esc.key,
-    "v:lua.term_esc.smart_esc(b:terminal_job_pid)",
-    {noremap = true, expr = true}
+        "t",
+        _G.term_esc.key,
+        "v:lua.term_esc.smart_esc(b:terminal_job_pid)",
+        {noremap = true, expr = true}
     )
 end
 
