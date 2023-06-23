@@ -50,13 +50,23 @@ function M.split_and_insert(content)
 end
 
 ---Extract the url from snips.sh output
-function M:yank_shared_url(cleaned_output, silent)
+function M:yank_shared_url(cleaned_output, silent, private)
     local id = cleaned_output:match("id:%s*(%S+)")
+
     if id then
         local url = string.format("https://snips.sh/f/%s", id)
-        vim.fn.setreg(self.opts.to_register, url)
         if not silent then
-          vim.print("SNIPS URL: " .. url .. " (Copied to your clipboard.)")
+            if private ~= nil then
+                print("Private snips created successfully !")
+                local command_to_ssh = string.format("ssh f:%s@snips.sh", id)
+                print("SNIPS COMMAND: " .. command_to_ssh .. " (Copied to your clipboard.)")
+
+                vim.fn.setreg(self.opts.to_register, command_to_ssh)
+            else
+                vim.print("SNIPS URL: " .. url .. " (Copied to your clipboard.)")
+
+                vim.fn.setreg(self.opts.to_register, url)
+            end
         end
     elseif not silent then
         vim.print(cleaned_output)
@@ -121,9 +131,9 @@ function M.execute_snips_command(args)
             local cleaned_output = output:gsub("\27%[[%d;]+m", "")
 
             if M.opts.post_behavior == "yank" then
-                M:yank_shared_url(cleaned_output)
+                M:yank_shared_url(cleaned_output, nil, private)
             elseif M.opts.post_behavior == "echo_and_yank" then
-                M:yank_shared_url(cleaned_output, true)
+                M:yank_shared_url(cleaned_output, true, private)
                 M.split_and_insert(cleaned_output)
             else
                 -- Create a new empty buffer and paste the output of the code there
