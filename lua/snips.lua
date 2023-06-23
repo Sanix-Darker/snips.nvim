@@ -46,6 +46,7 @@ function M.split_and_insert(content)
     vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, lines)
     vim.api.nvim_buf_set_option(bufnr, "modifiable", false)
     vim.cmd("resize -10")
+    vim.cmd("wincmd k")
 end
 
 ---Extract the url from snips.sh output
@@ -101,23 +102,33 @@ function M.execute_snips_command()
         return
     end
 
+    vim.print("SNIPS: Creating...")
     local command = M:command_factory(temp_file, ext)
-    local output = io.popen(command):read("*a")
-    -- To remove terminal colors
-    local cleaned_output = output:gsub("\27%[[%d;]+m", "")
+    local job_options = {
+        stdout_buffered = true,
+        on_stdout = function(_, data, _)
+            local output = ""
+            for _, line in ipairs(data) do
+                output = output .. vim.trim(line) .. "\n"
+            end
+            -- To remove terminal colors
+            local cleaned_output = output:gsub("\27%[[%d;]+m", "")
 
-    if M.opts.post_behavior == "yank" then
-        M:yank_shared_url(cleaned_output)
-    elseif M.opts.post_behavior == "echo_and_yank" then
-        M:yank_shared_url(cleaned_output, true)
-        M.split_and_insert(cleaned_output)
-    else
-        -- Create a new empty buffer and paste the output of the code there
-        M.split_and_insert(cleaned_output)
-    end
+            if M.opts.post_behavior == "yank" then
+                M:yank_shared_url(cleaned_output)
+            elseif M.opts.post_behavior == "echo_and_yank" then
+                M:yank_shared_url(cleaned_output, true)
+                M.split_and_insert(cleaned_output)
+            else
+                -- Create a new empty buffer and paste the output of the code there
+                M.split_and_insert(cleaned_output)
+            end
 
-    -- we erase the tmp file
-    os.remove(temp_file)
+            -- we erase the tmp file
+            os.remove(temp_file)
+        end,
+    }
+    vim.fn.jobstart(command, job_options)
 end
 
 ---To capture ESC on snips UI, we need those three methods
