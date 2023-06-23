@@ -70,13 +70,14 @@ The simple idea behind this plugin is to:
 
 ## COMMANDS
 
+- `SnipsList` To open the list of all uploaded/saved snips you have created so far.
 - `SnipsCreate` and you have generated/saved a snippet of your code, you're left with the link to share.
-- `SnipsCreateFromRegister` to create a snippet from register.
 - `SnipsCreatePrivate` to create private snips
     Note: on private mode, with a generated link like : https://snips.sh/f/the-id
     You can access your private snips code with:
         $ ssh f:the-id@snips.sh
-- `SnipsList` To open the list of all uploaded/saved snips you have created so far.
+- `SnipsCreateFromRegister` to create a snippet from register.
+- `SnipsCreatePrivateFromRegister` to create a snippet from register and save/upload on private.
 
 ## SETUP OPTIONS
 
