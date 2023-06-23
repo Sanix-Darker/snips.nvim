@@ -54,7 +54,7 @@ function M:yank_shared_url(cleaned_output, silent)
     local id = cleaned_output:match("id:%s*(%S+)")
     if id then
         local url = string.format("https://snips.sh/f/%s", id)
-        vim.fn.setreg(self.opts.yank_register, url)
+        vim.fn.setreg(self.opts.to_register, url)
         if not silent then
           vim.print("SNIPS URL: " .. url .. " (Copied to your clipboard.)")
         end
@@ -64,20 +64,26 @@ function M:yank_shared_url(cleaned_output, silent)
 end
 
 ---Execute the ssh command line to send the file on snips
-function M.execute_snips_command()
-    local selected_lines = {}
-    for _, line in ipairs(M.get_selected_lines()) do
-        table.insert(selected_lines, line)
+function M.execute_snips_command(args)
+    local content
+    local ext
+    if not (args and args.from_register) then
+        local selected_lines = {}
+        for _, line in ipairs(M.get_selected_lines()) do
+            table.insert(selected_lines, line)
+        end
+
+        if selected_lines == nil or #selected_lines == 0 then
+            vim.print("SNIPS::ERROR:: No lines selected.")
+            return
+        end
+
+        content = table.concat(selected_lines, "\n")
+        ext = M.get_file_extension()
+    else
+        content = vim.fn.getreg(M.opts.from_register)
     end
 
-    if selected_lines == nil or #selected_lines == 0 then
-        vim.print("SNIPS::ERROR:: No lines selected.")
-        return
-    end
-
-    local content = table.concat(selected_lines, "\n")
-
-    local ext = M.get_file_extension()
     local temp_file = os.tmpname()
     if ext ~= nil then
         temp_file = temp_file .. "." .. ext
@@ -214,13 +220,15 @@ function M:command_factory(file_path, extension)
     )
 end
 
+
 -- Setup user settings.
 function M.setup(opts)
     -- nothing defined yet
     local default_opts = {
         snips_host = "snips.sh",
         post_behavior = "echo", -- or "yank"
-        yank_register = "+",
+        to_register = "+", -- yank to
+        from_register = "+", -- copy from
         cat_cmd = "cat",
         ssh_cmd = "ssh"
     }

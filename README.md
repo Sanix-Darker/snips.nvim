@@ -68,6 +68,7 @@ The simple idea behind this plugin is to:
     Then you can open your nvim.
 - Select a bunch of lines from your current buffer.
 - Hit `SnipsCreate` and you have generated/saved a snippet of your code, you're left with the link to share.
+- Hit `SnipsCreateFromRegister` to create a snippet from register.
 - Hit `SnipsList` To open the list of all uploaded/saved snips you have created so far.
 
 ## DEFAULT OPTIONS
@@ -76,7 +77,8 @@ The simple idea behind this plugin is to:
 local opts = {
   snips_host = "snips.sh", -- in case you deployed your own custom instance
   post_behavior = "echo",  -- enum: ["echo", "yank", "echo_and_yank"]
-  yank_register = "+",
+  to_register = "+", -- yank to
+  from_register = "+", -- copy from
   cat_cmd = "cat", -- can be `bat` or `less`
   ssh_cmd = "ssh", -- choose your custom ssh client
 }
