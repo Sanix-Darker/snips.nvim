@@ -66,11 +66,12 @@ The simple idea behind this plugin is to:
 - *IMPORTANT NOTE*: You need to etablish a first connection with snips.sh server
     by running this example command on the terminal : `echo "Hello world" | ssh snips.sh`
     Then you can open your nvim.
-- Select a bunch of lines from your current buffer and use a snips command
+- Select a bunch of lines from your current buffer and use a snips.nvim command.
 
 ## COMMANDS
 
 - `SnipsCreate` and you have generated/saved a snippet of your code, you're left with the link to share.
+- `SnipsCreateFromRegister` to create a snippet from register.
 - `SnipsCreatePrivate` to create private snips
     Note: on private mode, with a generated link like : https://snips.sh/f/the-id
     You can access your private snips code with:
@@ -85,7 +86,8 @@ Those are default values, you can change as your will !
 local opts = {
   snips_host = "snips.sh", -- in case you deployed your own custom instance
   post_behavior = "echo",  -- enum: ["echo", "yank", "echo_and_yank"]
-  yank_register = "+",
+  to_register = "+", -- yank to
+  from_register = "+", -- copy from
   cat_cmd = "cat", -- can be `bat` or `less`
   ssh_cmd = "ssh", -- choose your custom ssh client
 }
