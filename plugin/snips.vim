@@ -7,6 +7,8 @@ endif
 
 " The Create a new Snips
 command! -range SnipsCreate <line1>,<line2>lua require'snips'.execute_snips_command()
+" The Create a private Snips
+command! -range SnipsCreatePrivate <line1>,<line2>lua require'snips'.execute_snips_command({ private = true })
 
 " To open the snips UI to list for available saved/uploaded snips
 command! SnipsList lua require'snips'.list_snips()

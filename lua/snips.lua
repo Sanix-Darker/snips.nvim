@@ -64,7 +64,10 @@ function M:yank_shared_url(cleaned_output, silent)
 end
 
 ---Execute the ssh command line to send the file on snips
-function M.execute_snips_command()
+function M.execute_snips_command(args)
+
+    local private = args.private or false
+
     local selected_lines = {}
     for _, line in ipairs(M.get_selected_lines()) do
         table.insert(selected_lines, line)
@@ -103,7 +106,7 @@ function M.execute_snips_command()
     end
 
     vim.print("SNIPS: Creating...")
-    local command = M:command_factory(temp_file, ext)
+    local command = M:command_factory(temp_file, private, ext)
     local job_options = {
         stdout_buffered = true,
         on_stdout = function(_, data, _)
@@ -196,13 +199,31 @@ function M.list_snips(ssh_command)
     M.escape_esc()
 end
 
-function M:command_factory(file_path, extension)
-    local extension_args = ""
+function M.args_builder(private, extension)
+    local args = ""
 
-    -- We force an extension if we detect that there is one
-    if extension ~= nil then
-        extension_args = "-- --ext " .. extension
+    if extension ~= nil or private ~= nil then
+        -- We force an extension if we detect that there is one
+        args = "--"
+        if extension ~= nil then
+            args = args .. " --ext " .. extension
+        end
+
+        -- We build the private_args in case of a private snips for example
+        if private ~= nil then
+            args = args .. " --private "
+        end
     end
+
+    return args
+end
+
+function M:command_factory(file_path, private, extension)
+
+    local args = M.args_builder(
+        private,
+        extension
+    )
 
     return string.format(
         "%s %s | %s %s %s",
@@ -210,7 +231,7 @@ function M:command_factory(file_path, extension)
         file_path,
         self.opts.ssh_cmd,
         self.opts.snips_host,
-        extension_args
+        args
     )
 end
 
