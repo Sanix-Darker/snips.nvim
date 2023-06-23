@@ -74,6 +74,7 @@ The simple idea behind this plugin is to:
 
 ```lua
 local opts = {
+  snips_host = "snips.sh", -- in case you deployed your own custom instance
   post_behavior = "echo",  -- enum: ["echo", "yank", "echo_and_yank"]
   yank_register = "+",
   cat_cmd = "cat", -- can be `bat` or `less`

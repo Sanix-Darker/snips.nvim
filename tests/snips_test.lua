@@ -56,7 +56,7 @@ end)
 -- Test for the 'command_factory' function
 describe('command_factory', function()
     it('should return the formatted command based on options', function()
-        Snips.opts = { cat_cmd = "cat", ssh_cmd = "ssh", post_behavior = "echo" }
+        Snips.opts = { snips_host = "snips.sh", cat_cmd = "cat", ssh_cmd = "ssh", post_behavior = "echo" }
 
         local expected_cmd = "cat /tmp/tempfile123.lua | ssh snips.sh -- --ext lua"
         local result = Snips:command_factory("/tmp/tempfile123.lua", "lua")
@@ -64,7 +64,7 @@ describe('command_factory', function()
     end)
 
     it('should return the formatted command without extension argument if extension is nil', function()
-        Snips.opts = { cat_cmd = "cat", ssh_cmd = "ssh", post_behavior = "echo" }
+        Snips.opts = { snips_host = "snips.sh", cat_cmd = "cat", ssh_cmd = "ssh", post_behavior = "echo" }
 
         local expected_cmd = "cat /tmp/tempfile123 | ssh snips.sh "
         local result = Snips:command_factory("/tmp/tempfile123", nil)
