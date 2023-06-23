@@ -55,19 +55,28 @@ end)
 
 -- Test for the 'command_factory' function
 describe('command_factory', function()
-    it('should return the formatted command based on options', function()
-        Snips.opts = { snips_host = "snips.sh", cat_cmd = "cat", ssh_cmd = "ssh", post_behavior = "echo" }
+    Snips.opts = { snips_host = "snips.sh", cat_cmd = "cat", ssh_cmd = "ssh", post_behavior = "echo" }
 
-        local expected_cmd = "cat /tmp/tempfile123.lua | ssh snips.sh -- --ext lua"
+    it('should return the formatted command based on options', function()
+        local expected_cmd = "cat /tmp/tempfile123.lua | ssh snips.sh -- --ext lua "
         local result = Snips:command_factory("/tmp/tempfile123.lua", "lua")
         assert.are.equal(expected_cmd, result)
     end)
 
     it('should return the formatted command without extension argument if extension is nil', function()
-        Snips.opts = { snips_host = "snips.sh", cat_cmd = "cat", ssh_cmd = "ssh", post_behavior = "echo" }
-
-        local expected_cmd = "cat /tmp/tempfile123 | ssh snips.sh "
+        local expected_cmd = "cat /tmp/tempfile123 | ssh snips.sh  "
         local result = Snips:command_factory("/tmp/tempfile123", nil)
+        assert.are.equal(expected_cmd, result)
+    end)
+    it('should return the formatted command without extension argument if extension is nil with private flag', function()
+        local expected_cmd = "cat /tmp/tempfile123 | ssh snips.sh -- --private "
+        local result = Snips:command_factory("/tmp/tempfile123", nil, true)
+        assert.are.equal(expected_cmd, result)
+    end)
+
+    it('should return the formatted command based on options with private flag', function()
+        local expected_cmd = "cat /tmp/tempfile123.lua | ssh snips.sh -- --ext lua --private "
+        local result = Snips:command_factory("/tmp/tempfile123.lua", "lua", true)
         assert.are.equal(expected_cmd, result)
     end)
 end)

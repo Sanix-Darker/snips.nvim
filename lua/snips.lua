@@ -66,7 +66,7 @@ end
 ---Execute the ssh command line to send the file on snips
 function M.execute_snips_command(args)
 
-    local private = args.private or false
+    local private = args.private
 
     local selected_lines = {}
     for _, line in ipairs(M.get_selected_lines()) do
@@ -106,7 +106,7 @@ function M.execute_snips_command(args)
     end
 
     vim.print("SNIPS: Creating...")
-    local command = M:command_factory(temp_file, private, ext)
+    local command = M:command_factory(temp_file, ext, private)
     local job_options = {
         stdout_buffered = true,
         on_stdout = function(_, data, _)
@@ -211,14 +211,14 @@ function M.args_builder(private, extension)
 
         -- We build the private_args in case of a private snips for example
         if private ~= nil then
-            args = args .. " --private "
+            args = args .. " --private"
         end
     end
 
-    return args
+    return args.." "
 end
 
-function M:command_factory(file_path, private, extension)
+function M:command_factory(file_path, extension, private)
 
     local args = M.args_builder(
         private,
