@@ -77,7 +77,7 @@ end
 function M.execute_snips_command(args)
     local content
     local ext
-    local private = args.private
+    local private = args and args.private
 
     if not (args and args.from_register) then
         local selected_lines = {}
