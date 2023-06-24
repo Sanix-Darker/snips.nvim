@@ -69,12 +69,22 @@ The simple idea behind this plugin is to:
 - *IMPORTANT NOTE*: You need to etablish a first connection with snips.sh server
     by running this example command on the terminal : `echo "Hello world" | ssh snips.sh`
     Then you can open your nvim.
-- Select a bunch of lines from your current buffer.
-- Hit `SnipsCreate` and you have generated/saved a snippet of your code, you're left with the link to share.
-- Hit `SnipsCreateFromRegister` to create a snippet from register.
-- Hit `SnipsList` To open the list of all uploaded/saved snips you have created so far.
+- Select a bunch of lines from your current buffer and use a snips.nvim command.
 
-## DEFAULT OPTIONS
+## COMMANDS
+
+- `SnipsList` To open the list of all uploaded/saved snips you have created so far.
+- `SnipsCreate` and you have generated/saved a snippet of your code, you're left with the link to share.
+- `SnipsCreatePrivate` to create private snips
+    Note: on private mode, with a generated link like : https://snips.sh/f/the-id
+    You can access your private snips code with:
+        $ ssh f:the-id@snips.sh
+- `SnipsCreateFromRegister` to create a snippet from register.
+- `SnipsCreatePrivateFromRegister` to create a snippet from register and save/upload on private.
+
+## SETUP OPTIONS
+
+Those are default values, you can change as your will !
 
 ```lua
 local opts = {
@@ -99,4 +109,4 @@ But for now i will keep it simple since it does what i want it to do for now.
 
 ## CONTRIBUTORS
 
-- [Pagliacii](https://github.com/Pagliacii)
+[Pagliacii](https://github.com/Pagliacii)

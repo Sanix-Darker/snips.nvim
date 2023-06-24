@@ -55,19 +55,58 @@ end)
 
 -- Test for the 'command_factory' function
 describe('command_factory', function()
-    it('should return the formatted command based on options', function()
-        Snips.opts = { snips_host = "snips.sh", cat_cmd = "cat", ssh_cmd = "ssh", post_behavior = "echo" }
+    Snips.opts = { snips_host = "snips.sh", cat_cmd = "cat", ssh_cmd = "ssh", post_behavior = "echo" }
 
-        local expected_cmd = "cat /tmp/tempfile123.lua | ssh snips.sh -- --ext lua"
+    it('should return the formatted command based on options', function()
+        local expected_cmd = "cat /tmp/tempfile123.lua | ssh snips.sh -- --ext lua "
         local result = Snips:command_factory("/tmp/tempfile123.lua", "lua")
         assert.are.equal(expected_cmd, result)
     end)
 
     it('should return the formatted command without extension argument if extension is nil', function()
-        Snips.opts = { snips_host = "snips.sh", cat_cmd = "cat", ssh_cmd = "ssh", post_behavior = "echo" }
-
-        local expected_cmd = "cat /tmp/tempfile123 | ssh snips.sh "
+        local expected_cmd = "cat /tmp/tempfile123 | ssh snips.sh  "
         local result = Snips:command_factory("/tmp/tempfile123", nil)
         assert.are.equal(expected_cmd, result)
+    end)
+    it('should return the formatted command without extension argument if extension is nil with private flag', function()
+        local expected_cmd = "cat /tmp/tempfile123 | ssh snips.sh -- --private "
+        local result = Snips:command_factory("/tmp/tempfile123", nil, true)
+        assert.are.equal(expected_cmd, result)
+    end)
+
+    it('should return the formatted command based on options with private flag', function()
+        local expected_cmd = "cat /tmp/tempfile123.lua | ssh snips.sh -- --ext lua --private "
+        local result = Snips:command_factory("/tmp/tempfile123.lua", "lua", true)
+        assert.are.equal(expected_cmd, result)
+    end)
+end)
+
+
+-- Test for the 'command_factory' function
+describe('args_builder', function()
+    it('should build args concatenation as expected', function()
+        -- Test case 1: No arguments provided
+        local result1 = Snips.args_builder()
+        assert.are.equal(result1, " ")
+
+        -- Test case 2: Only private argument provided
+        local result2 = Snips.args_builder(true)
+        assert.are.equal(result2, "-- --private ")
+
+        -- Test case 3: Only extension argument provided
+        local result3 = Snips.args_builder(nil, "lua")
+        assert.are.equal(result3, "-- --ext lua ")
+
+        -- Test case 4: Both private and extension arguments provided
+        local result4 = Snips.args_builder(true, "py")
+        assert.are.equal(result4, "-- --ext py --private ")
+
+        -- Test case 5: Neither private nor extension arguments provided
+        local result5 = Snips.args_builder(nil, nil)
+        assert.are.equal(result5, " ")
+
+        -- Test case 6: Only extension argument provided with nil private argument
+        local result6 = Snips.args_builder(nil, "txt")
+        assert.are.equal(result6, "-- --ext txt ")
     end)
 end)

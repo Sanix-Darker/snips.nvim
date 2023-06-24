@@ -50,13 +50,23 @@ function M.split_and_insert(content)
 end
 
 ---Extract the url from snips.sh output
-function M:yank_shared_url(cleaned_output, silent)
+function M:yank_shared_url(cleaned_output, silent, private)
     local id = cleaned_output:match("id:%s*(%S+)")
+
     if id then
         local url = string.format("https://snips.sh/f/%s", id)
-        vim.fn.setreg(self.opts.to_register, url)
         if not silent then
-          vim.print("SNIPS URL: " .. url .. " (Copied to your clipboard.)")
+            if private ~= nil then
+                print("Private snips created successfully !")
+                local command_to_ssh = string.format("ssh f:%s@snips.sh", id)
+                print("SNIPS COMMAND: " .. command_to_ssh .. " (Copied to your clipboard.)")
+
+                vim.fn.setreg(self.opts.to_register, command_to_ssh)
+            else
+                vim.print("SNIPS URL: " .. url .. " (Copied to your clipboard.)")
+
+                vim.fn.setreg(self.opts.to_register, url)
+            end
         end
     elseif not silent then
         vim.print(cleaned_output)
@@ -67,6 +77,8 @@ end
 function M.execute_snips_command(args)
     local content
     local ext
+    local private = args.private
+
     if not (args and args.from_register) then
         local selected_lines = {}
         for _, line in ipairs(M.get_selected_lines()) do
@@ -96,20 +108,18 @@ function M.execute_snips_command(args)
         vim.print("SNIPS::ERROR:: Failed to create temporary file.")
         return
     end
-    local success, error_message =
-    pcall(
-    function()
+    local success, error_message = pcall(function()
         file:write(content)
         file:close()
-    end
-    )
+    end)
+
     if not success then
         vim.print("SNIPS::ERROR:: While writing to or closing the temporary file:", error_message)
         return
     end
 
     vim.print("SNIPS: Creating...")
-    local command = M:command_factory(temp_file, ext)
+    local command = M:command_factory(temp_file, ext, private)
     local job_options = {
         stdout_buffered = true,
         on_stdout = function(_, data, _)
@@ -121,9 +131,9 @@ function M.execute_snips_command(args)
             local cleaned_output = output:gsub("\27%[[%d;]+m", "")
 
             if M.opts.post_behavior == "yank" then
-                M:yank_shared_url(cleaned_output)
+                M:yank_shared_url(cleaned_output, nil, private)
             elseif M.opts.post_behavior == "echo_and_yank" then
-                M:yank_shared_url(cleaned_output, true)
+                M:yank_shared_url(cleaned_output, true, private)
                 M.split_and_insert(cleaned_output)
             else
                 -- Create a new empty buffer and paste the output of the code there
@@ -202,13 +212,31 @@ function M.list_snips(ssh_command)
     M.escape_esc()
 end
 
-function M:command_factory(file_path, extension)
-    local extension_args = ""
+function M.args_builder(private, extension)
+    local args = ""
 
-    -- We force an extension if we detect that there is one
-    if extension ~= nil then
-        extension_args = "-- --ext " .. extension
+    if extension ~= nil or private ~= nil then
+        -- We force an extension if we detect that there is one
+        args = "--"
+        if extension ~= nil then
+            args = args .. " --ext " .. extension
+        end
+
+        -- We build the private_args in case of a private snips for example
+        if private ~= nil then
+            args = args .. " --private"
+        end
     end
+
+    return args.." "
+end
+
+function M:command_factory(file_path, extension, private)
+
+    local args = M.args_builder(
+        private,
+        extension
+    )
 
     return string.format(
         "%s %s | %s %s %s",
@@ -216,7 +244,7 @@ function M:command_factory(file_path, extension)
         file_path,
         self.opts.ssh_cmd,
         self.opts.snips_host,
-        extension_args
+        args
     )
 end
 
