@@ -1,9 +1,9 @@
 #  (2023-07-13)
 
 
-### Features
+### Bug Fixes
 
-* **test:** just test the changelog generator ([a7e37b4](https://github.com/Sanix-Darker/snips.nvim/commit/a7e37b4314b558ca9ce37b6439ac10baac428b63))
+* **core:** just to test again something ([95b4a71](https://github.com/Sanix-Darker/snips.nvim/commit/95b4a71b950d8f7c9b6571c5bcb6ca22cd08288c))
 
 
 
