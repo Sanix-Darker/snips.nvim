@@ -110,4 +110,3 @@ describe('args_builder', function()
         assert.are.equal(result6, "-- --ext txt ")
     end)
 end)
-
