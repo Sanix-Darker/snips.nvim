@@ -1,12 +1,13 @@
 name: Generate Changelog
 
-on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+# just to test the CI
+on: [push]
+  # push:
+  #   branches:
+  #     - master
+  # pull_request:
+  #   branches:
+  #     - master
 
 jobs:
   gitcliff:
@@ -34,5 +35,5 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add CHANGELOG.md
-          git commit -m "Update changelog form ${{ github.event.pull_request.number }" || true
+          git commit -m "Update changelog form -> ${{ github.event.pull_request.number }}" || true
           git push
