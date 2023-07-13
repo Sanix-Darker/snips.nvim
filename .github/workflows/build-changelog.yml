@@ -1,0 +1,38 @@
+name: Generate Changelog
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  gitcliff:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate changelog
+        run: |
+          npm install -g conventional-changelog-cli
+          npx conventional-changelog -p angular -i CHANGELOG.md -s -r 0
+
+      - name: Commit and push changes of a changelog
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add CHANGELOG.md
+          git commit -m "Update changelog form ${{ github.event.pull_request.number }" || true
+          git push
